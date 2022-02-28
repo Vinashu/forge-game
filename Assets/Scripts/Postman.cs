@@ -13,10 +13,6 @@ public class Postman : MonoBehaviour
         DEV, PROD
     };
 
-    //
-    public SpriteRenderer spriteRenderer;
-    //
-
     [SerializeField] private Server target = Server.DEV;
     [SerializeField] private string devAddress = "http://localhost";
     [SerializeField] private int devPort = 3000;
@@ -33,43 +29,6 @@ public class Postman : MonoBehaviour
         {
             Destroy(this);
         }
-    }
-
-    private void Start()
-    {
-        string url = getServer() + "/api/test";
-        Get(url,
-           (error) => {
-               Debug.Log($"Error: {error}");
-           },
-           (result) =>
-           {
-               Message received = JsonUtility.FromJson<Message>(result);
-               Debug.Log($"variable: {received.variable}");
-               Debug.Log($"value: {received.value}");
-           });
-        url = getServer() + "/api/teste";
-        Get(url,
-           (error) => {
-               Debug.Log($"Error: {error}");
-           },
-           (result) =>
-           {
-               Message received = JsonUtility.FromJson<Message>(result);
-               Debug.Log($"variable: {received.variable}");
-               Debug.Log($"value: {received.value}");
-           });
-
-        url = getServer() + "/images/badge05.png";
-        GetImage(url,
-           (error) => {
-               Debug.Log($"Error: {error}");
-           },
-           (result) =>
-           {
-               Sprite sprite = Sprite.Create(result, new Rect(0, 0, result.width, result.height), new Vector2(0.5f, 0.5f));
-               this.spriteRenderer.sprite = sprite;
-           });
     }
 
     private string getServer()
@@ -130,6 +89,33 @@ public class Postman : MonoBehaviour
         }
     }
 
+    private void Post(string json, string url, Action<string> onError, Action<string> onSuccess)
+    {
+        StartCoroutine(PostAssync(json, url, onError, onSuccess));
+    }
+
+    private IEnumerator PostAssync(string json, string url, Action<string> onError, Action<string> onSuccess)
+    {
+        Debug.Log($"json: {json}");
+        using (UnityWebRequest unityWebRequest = UnityWebRequest.Put(url, json))
+        {
+            unityWebRequest.method = UnityWebRequest.kHttpVerbPOST;
+            unityWebRequest.SetRequestHeader("Content-Type", "application/json");
+            unityWebRequest.SetRequestHeader("Accept", "application/json");
+            yield return unityWebRequest.SendWebRequest();
+            if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError ||
+                unityWebRequest.result == UnityWebRequest.Result.ProtocolError
+              )
+            {
+                onError(unityWebRequest.error);
+            }
+            else
+            {
+                onSuccess(unityWebRequest.downloadHandler.text);
+            }
+        }
+    }
+
     private class Message
     {
         public string variable;
@@ -148,5 +134,52 @@ public class Postman : MonoBehaviour
         Message received = JsonUtility.FromJson<Message>(json);
         Debug.Log($"variable: {received.variable}");
         Debug.Log($"value: {received.value}");
+    }
+
+
+    //
+    public SpriteRenderer spriteRenderer;
+    //
+
+    private void Start()
+    {
+        string url = getServer() + "/api/test";
+        //Get(url,
+        //   (error) => {
+        //       Debug.Log($"Error: {error}");
+        //   },
+        //   (result) =>
+        //   {
+        //       Message received = JsonUtility.FromJson<Message>(result);
+        //       Debug.Log($"variable: {received.variable}");
+        //       Debug.Log($"value: {received.value}");
+        //   });
+
+        url = getServer() + "/api/test";
+        Message message = new Message();
+        message.variable = "Level";
+        message.value = 1.0f;
+        string json = JsonUtility.ToJson(message);
+        Post(json,url,
+           (error) => {
+               Debug.Log($"Error: {error}");
+           },
+           (result) =>
+           {
+               Message received = JsonUtility.FromJson<Message>(result);
+               Debug.Log($"variable: {received.variable}");
+               Debug.Log($"value: {received.value}");
+           });
+
+        url = getServer() + "/images/badge02.png";
+        GetImage(url,
+           (error) => {
+               Debug.Log($"Error: {error}");
+           },
+           (result) =>
+           {
+               Sprite sprite = Sprite.Create(result, new Rect(0, 0, result.width, result.height), new Vector2(0.5f, 0.5f));
+               this.spriteRenderer.sprite = sprite;
+           });
     }
 }
