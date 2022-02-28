@@ -169,6 +169,74 @@ public class Postman : MonoBehaviour
     }
 
     /// <summary>
+    /// A http put method to make a request to the server
+    /// </summary>
+    /// <param name="url">The server url</param>
+    /// <param name="onError">An event that will be executed if there is an error</param>
+    /// <param name="onSuccess">An event that will be executed if the request is succed</param>
+    private void Put(string json, string url, Action<string> onError, Action<string> onSuccess)
+    {
+        StartCoroutine(PutAssync(json, url, onError, onSuccess));
+    }
+
+    /// <summary>
+    /// The asyncronous version of the Put method. 
+    /// </summary>
+    /// <returns>It will execute onError or onSuccess depending on the return of the request</returns>
+    private IEnumerator PutAssync(string json, string url, Action<string> onError, Action<string> onSuccess)
+    {
+        using (UnityWebRequest unityWebRequest = UnityWebRequest.Put(url, json))
+        {
+            unityWebRequest.SetRequestHeader("Content-Type", "application/json");
+            unityWebRequest.SetRequestHeader("Accept", "application/json");
+            yield return unityWebRequest.SendWebRequest();
+            if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError ||
+                unityWebRequest.result == UnityWebRequest.Result.ProtocolError
+              )
+            {
+                onError(unityWebRequest.error);
+            }
+            else
+            {
+                onSuccess(unityWebRequest.downloadHandler.text);
+            }
+        }
+    }
+
+    /// <summary>
+    /// A http delete method to make a request to the server
+    /// </summary>
+    /// <param name="url">The server url</param>
+    /// <param name="onError">An event that will be executed if there is an error</param>
+    /// <param name="onSuccess">An event that will be executed if the request is succed</param>
+    private void Delete(string url, Action<string> onError, Action<string> onSuccess)
+    {
+        StartCoroutine(DeleteAssync(url, onError, onSuccess));
+    }
+
+    /// <summary>
+    /// The asyncronous version of the Delete method. 
+    /// </summary>
+    /// <returns>It will execute onError or onSuccess depending on the return of the request</returns>
+    private IEnumerator DeleteAssync(string url, Action<string> onError, Action<string> onSuccess)
+    {
+        using (UnityWebRequest unityWebRequest = UnityWebRequest.Delete(url))
+        {
+            yield return unityWebRequest.SendWebRequest();
+            if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError ||
+                unityWebRequest.result == UnityWebRequest.Result.ProtocolError
+              )
+            {
+                onError(unityWebRequest.error);
+            }
+            else
+            {
+                onSuccess("Message successefully received from the server.");
+            }
+        }
+    }
+
+    /// <summary>
     /// Class to format the JSON object that will be sent to the server
     /// </summary>
     private class Message
@@ -200,6 +268,7 @@ public class Postman : MonoBehaviour
 
     private void Start()
     {
+        //Get Test
         string url = getServer() + "/api/test";
         Get(url,
            (error) =>
@@ -208,17 +277,18 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful get requset");
+               Debug.Log("Make a successeful GET requset");
                Message received = JsonUtility.FromJson<Message>(result);
                Debug.Log($"variable: {received.variable}");
                Debug.Log($"value: {received.value}");
            });
 
+        //Invalid Get Test
         url = getServer() + "/api/teste";
         Get(url,
            (error) =>
            {
-               Debug.Log("Make an unsuccesseful get requset");
+               Debug.Log("Make an UNsuccesseful GET requset");
                Debug.Log($"Error: {error}");
            },
            (result) =>
@@ -228,6 +298,20 @@ public class Postman : MonoBehaviour
                Debug.Log($"value: {received.value}");
            });
 
+        //Delete Test
+        url = getServer() + "/api/test";
+        Delete(url,
+           (error) =>
+           {
+               Debug.Log($"Error: {error}");
+           },
+           (result) =>
+           {
+               Debug.Log("Make a successeful DELETE requset");
+               Debug.Log($"variable: {result}");
+           });
+
+        //Post test
         url = getServer() + "/api/test";
         Message message = new Message();
         message.variable = "Level";
@@ -239,12 +323,31 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful post requset");
+               Debug.Log("Make a successeful POST requset");
                Message received = JsonUtility.FromJson<Message>(result);
                Debug.Log($"variable: {received.variable}");
                Debug.Log($"value: {received.value}");
            });
 
+        //Put test
+        url = getServer() + "/api/test";
+        message.variable = "Level";
+        message.value = 1.0f;
+        json = JsonUtility.ToJson(message);
+        Put(json, url,
+           (error) => {
+               Debug.Log($"Error: {error}");
+           },
+           (result) =>
+           {
+               Debug.Log("Make a successeful PUT requset");
+               Message received = JsonUtility.FromJson<Message>(result);
+               Debug.Log($"variable: {received.variable}");
+               Debug.Log($"value: {received.value}");
+           });
+
+
+        //Get Image test
         url = getServer() + "/images/badge02.png";
         GetImage(url,
            (error) => {
