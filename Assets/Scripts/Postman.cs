@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 public class Postman : MonoBehaviour
 {
+    #region variables
     /// <summary>
     /// There are two possible servers, the DEVelopment and the
     /// PRODuction server.
@@ -24,7 +25,9 @@ public class Postman : MonoBehaviour
     [SerializeField] private int devPort = 3000;
     [SerializeField] private string prodAddress = "http://localhost";
     [SerializeField] private int prodPort = 80;
+    #endregion
 
+    #region Singleton
     /// <summary>
     /// Setup the Singleton pattern
     /// When attached to one game object it will become available
@@ -47,7 +50,9 @@ public class Postman : MonoBehaviour
             Destroy(this);
         }
     }
+    #endregion
 
+    #region Getters
     /// <summary>
     /// Method to setup the sever url according to the deplyment target
     /// </summary>
@@ -63,7 +68,9 @@ public class Postman : MonoBehaviour
                 return ($"{this.devAddress}:{this.devPort}");
         }
     }
+    #endregion
 
+    #region Get() method
     /// <summary>
     /// A http get method to make a request to the server
     /// </summary>
@@ -95,7 +102,9 @@ public class Postman : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region GEtImage() method
     /// <summary>
     /// A http get method to make a request to the server, expecting an image as return
     /// </summary>
@@ -129,7 +138,9 @@ public class Postman : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Post() method
     /// <summary>
     /// A http post method to make a request to the server
     /// </summary>
@@ -167,7 +178,9 @@ public class Postman : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Put() method
     /// <summary>
     /// A http put method to make a request to the server
     /// </summary>
@@ -202,7 +215,9 @@ public class Postman : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Delete() method
     /// <summary>
     /// A http delete method to make a request to the server
     /// </summary>
@@ -235,7 +250,9 @@ public class Postman : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Message Control
     /// <summary>
     /// Class to format the JSON object that will be sent to the server
     /// </summary>
@@ -245,7 +262,17 @@ public class Postman : MonoBehaviour
         public float value;
     }
 
+    /// <summary>
+    /// Class to combine all the messages to be sent as just one JSON
+    /// object to the server
+    /// </summary>
+    private class Dispatcher
+    {
+        public Message[] messages;
+    }
+    #endregion
 
+    #region Tests
     /// <summary>
     /// Just for test purpose, should remove eventually
     /// </summary>
@@ -360,4 +387,5 @@ public class Postman : MonoBehaviour
                this.spriteRenderer.sprite = sprite;
            });
     }
+    #endregion
 }
