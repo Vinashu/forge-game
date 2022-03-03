@@ -24,22 +24,42 @@ public class GameManager : MonoBehaviour
     void Play()
     {
         int points = Random.Range(0, 100);
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(0)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(10)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(20)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(30)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(40)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(50)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(60)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(70)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(80)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(90)));
-        Debug.Log(Mathf.RoundToInt(rewardPoints.Evaluate(100)));
+        points = Mathf.RoundToInt(rewardPoints.Evaluate(points));
+        if (points >= 1)
+        {
+            this.player.UpdateLevel();
+        }
+        this.player.UpdateLevels();
+        this.player.UpdatePoints(points);
+        this.player.UpdateTotalPoints(points);
+        Postman.Dispatcher dispatcher = this.player.CreateMessages();
+        string url = Postman.Instance.getServer() + "/api/engine";
+        string json = JsonUtility.ToJson(dispatcher);
+        Postman.Instance.Post(
+            json,
+            url,
+            (error) =>
+            {
+                Debug.LogError($"error: {error}");
+            },
+            (result) =>
+            {
+                Debug.Log($"result: {result}");
+            }
+        );
     }
     
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            Play();
+        }
+
+        if(Input.GetKeyDown(KeyCode.N))
+        {
+            PlayerInit();
+        }
     }
 
     void ConfigPoints()
@@ -68,12 +88,10 @@ public class GameManager : MonoBehaviour
         rewardPoints.AddKey(100, this.maxPoints);
         AnimationUtility.SetKeyLeftTangentMode(rewardPoints, 7, AnimationUtility.TangentMode.Linear);
         AnimationUtility.SetKeyRightTangentMode(rewardPoints, 7, AnimationUtility.TangentMode.Linear);
-        Play();
     }
 
     void PlayerInit()
     {
         player = new Player();
-        Debug.Log(player);
     }
 }

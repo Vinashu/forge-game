@@ -57,7 +57,7 @@ public class Postman : MonoBehaviour
     /// Method to setup the sever url according to the deplyment target
     /// </summary>
     /// <returns>server url</returns>
-    private string getServer()
+    public string getServer()
     {
         switch (this.target) {
             case Server.DEV:
@@ -77,7 +77,7 @@ public class Postman : MonoBehaviour
     /// <param name="url">The server url</param>
     /// <param name="onError">An event that will be executed if there is an error</param>
     /// <param name="onSuccess">An event that will be executed if the request is succed</param>
-    private void Get(string url, Action<string> onError, Action<string> onSuccess)
+    public void Get(string url, Action<string> onError, Action<string> onSuccess)
     {
         StartCoroutine(GetAssync(url, onError, onSuccess));
     }
@@ -111,7 +111,7 @@ public class Postman : MonoBehaviour
     /// <param name="url">The server url</param>
     /// <param name="onError">An event that will be executed if there is an error</param>
     /// <param name="onSuccess">An event that will be executed if the request is succed</param>
-    private void GetImage(string url, Action<string> onError, Action<Texture2D> onSuccess)
+    public void GetImage(string url, Action<string> onError, Action<Texture2D> onSuccess)
     {
         StartCoroutine(GetImageAssync(url, onError, onSuccess));
     }
@@ -147,7 +147,7 @@ public class Postman : MonoBehaviour
     /// <param name="url">The server url</param>
     /// <param name="onError">An event that will be executed if there is an error</param>
     /// <param name="onSuccess">An event that will be executed if the request is succed</param>
-    private void Post(string json, string url, Action<string> onError, Action<string> onSuccess)
+    public void Post(string json, string url, Action<string> onError, Action<string> onSuccess)
     {
         StartCoroutine(PostAssync(json, url, onError, onSuccess));
     }
@@ -187,7 +187,7 @@ public class Postman : MonoBehaviour
     /// <param name="url">The server url</param>
     /// <param name="onError">An event that will be executed if there is an error</param>
     /// <param name="onSuccess">An event that will be executed if the request is succed</param>
-    private void Put(string json, string url, Action<string> onError, Action<string> onSuccess)
+    public void Put(string json, string url, Action<string> onError, Action<string> onSuccess)
     {
         StartCoroutine(PutAssync(json, url, onError, onSuccess));
     }
@@ -224,7 +224,7 @@ public class Postman : MonoBehaviour
     /// <param name="url">The server url</param>
     /// <param name="onError">An event that will be executed if there is an error</param>
     /// <param name="onSuccess">An event that will be executed if the request is succed</param>
-    private void Delete(string url, Action<string> onError, Action<string> onSuccess)
+    public void Delete(string url, Action<string> onError, Action<string> onSuccess)
     {
         StartCoroutine(DeleteAssync(url, onError, onSuccess));
     }
@@ -256,19 +256,38 @@ public class Postman : MonoBehaviour
     /// <summary>
     /// Class to format the JSON object that will be sent to the server
     /// </summary>
-    private class Message
+    [Serializable]
+    public class Message
     {
         public string variable;
         public float value;
+
+        public Message() { }
+
+        public Message(string variable, float value)
+        {
+            this.variable = variable;
+            this.value = value;
+        }
     }
 
     /// <summary>
     /// Class to combine all the messages to be sent as just one JSON
     /// object to the server
     /// </summary>
-    private class Dispatcher
+    [Serializable]
+    public class Dispatcher
     {
         public Message[] messages;
+
+        public Dispatcher() { }
+
+        public Dispatcher(Message[] messages)
+        {
+            //this.messages = new Message[messages.Length];
+            this.messages = messages;
+            //Debug.Log(this.messages[0].variable);
+        }
     }
     #endregion
 
@@ -294,6 +313,11 @@ public class Postman : MonoBehaviour
     public SpriteRenderer spriteRenderer;
 
     private void Start()
+    {
+        //RunTests();
+    }
+
+    private void RunTests()
     {
         //Get Test
         string url = getServer() + "/api/test";
@@ -344,8 +368,9 @@ public class Postman : MonoBehaviour
         message.variable = "Level";
         message.value = 1.0f;
         string json = JsonUtility.ToJson(message);
-        Post(json,url,
-           (error) => {
+        Post(json, url,
+           (error) =>
+           {
                Debug.Log($"Error: {error}");
            },
            (result) =>
@@ -362,7 +387,8 @@ public class Postman : MonoBehaviour
         message.value = 1.0f;
         json = JsonUtility.ToJson(message);
         Put(json, url,
-           (error) => {
+           (error) =>
+           {
                Debug.Log($"Error: {error}");
            },
            (result) =>
@@ -377,7 +403,8 @@ public class Postman : MonoBehaviour
         //Get Image test
         url = getServer() + "/images/badge02.png";
         GetImage(url,
-           (error) => {
+           (error) =>
+           {
                Debug.Log($"Error: {error}");
            },
            (result) =>
