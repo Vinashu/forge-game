@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    int players = 0;
     Player player;
     [SerializeField]
     private AnimationCurve rewardPoints;
@@ -21,9 +23,9 @@ public class GameManager : MonoBehaviour
         PlayerInit();
     }
 
-    void Play()
+    public void Play()
     {
-        int points = Random.Range(0, 100);
+        int points = UnityEngine.Random.Range(0, 100);
         points = Mathf.RoundToInt(rewardPoints.Evaluate(points));
         if (points >= 1)
         {
@@ -41,10 +43,18 @@ public class GameManager : MonoBehaviour
             (error) =>
             {
                 Debug.LogError($"error: {error}");
+                EventBroker.CallOnPostmanError(error);
             },
             (result) =>
             {
                 Debug.Log($"result: {result}");
+                Rewards rewards = JsonUtility.FromJson<Rewards>(result);
+                Debug.Log($"Rewards received: {rewards.rewards.Length}");
+                this.player.UpdateRewards(rewards);
+                EventBroker.CallOnPostmanSuccess(
+                    $"Message successefuly received from the server! {rewards.rewards.Length} rewards for you."
+                );
+                EventBroker.CallOnPlayerUpdate(this.player);
             }
         );
     }
@@ -90,8 +100,10 @@ public class GameManager : MonoBehaviour
         AnimationUtility.SetKeyRightTangentMode(rewardPoints, 7, AnimationUtility.TangentMode.Linear);
     }
 
-    void PlayerInit()
+    public void PlayerInit()
     {
-        player = new Player();
+        this.players++;
+        player = new Player($"Player #{this.players}", 0, 0, 0,0);
+        EventBroker.CallOnNewPlayer(this.player);
     }
 }

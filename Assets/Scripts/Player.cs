@@ -10,7 +10,7 @@ public class Player
     int points = 0;
     int totalPoints = 0;
 
-    ArrayList rewards = new ArrayList();
+    public Dictionary<int, Reward> rewards = new Dictionary<int, Reward>();
 
     public Player()
     {
@@ -34,14 +34,20 @@ public class Player
         messageList.Add(new Postman.Message("points", this.points));
         messageList.Add(new Postman.Message("totalPoints", this.totalPoints));
         Postman.Message[] messages = (Postman.Message[])messageList.ToArray(typeof(Postman.Message));
-        //Postman.Message[] messages = new Postman.Message[4];
-        //messages[0] = (new Postman.Message("level", this.level));
-        //messages[1] = (new Postman.Message("levels", this.levels));
-        //messages[2] = (new Postman.Message("points", this.points));
-        //messages[3] = (new Postman.Message("totalPoints", this.totalPoints));
         Postman.Dispatcher dispatcher = new Postman.Dispatcher(messages);
-        Debug.Log(JsonUtility.ToJson(dispatcher));
+        //Debug.Log(JsonUtility.ToJson(dispatcher));
         return dispatcher;
+    }
+
+    public void UpdateRewards(Rewards result)
+    {
+        foreach(Reward reward in result.rewards)
+        {
+            if(!this.rewards.ContainsKey(reward._id))
+            {
+                this.rewards.Add(reward._id, reward);
+            }
+        }
     }
 
     public void UpdateLevel()
@@ -62,5 +68,35 @@ public class Player
     public void UpdateTotalPoints(int points)
     {
         this.totalPoints += points;
+    }
+
+    public string GetName()
+    {
+        return this.name;
+    }
+
+    public int GetLevel()
+    {
+        return this.level;
+    }
+
+    public int GetLevels()
+    {
+        return this.levels;
+    }
+
+    public int GetPoints()
+    {
+        return this.points;
+    }
+
+    public int GetTotalPoints()
+    {
+        return this.totalPoints;
+    }
+
+    internal int GetNumberBadges()
+    {
+        return this.rewards.Count;
     }
 }
