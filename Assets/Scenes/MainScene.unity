@@ -405,7 +405,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 918376940}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayHeads
+        m_MethodName: PlayTails
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -568,9 +568,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 70.000015, y: 168.00003}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.000000022351742, y: 0.5}
+  m_AnchoredPosition: {x: 197.40515, y: 168.00003}
+  m_SizeDelta: {x: 525.07, y: 100}
+  m_Pivot: {x: 0.50000006, y: 0.5}
 --- !u!1 &245332586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,7 +1728,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -2.3713074, y: 0.289299}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &657182446
 MonoBehaviour:
@@ -2237,7 +2237,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &952834730
 GameObject:
@@ -2453,7 +2453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1112310388
 GameObject:
@@ -2490,10 +2490,12 @@ MonoBehaviour:
   winsInARowValue: {fileID: 952834732}
   badgesValue: {fileID: 338429658}
   errorWindow: {fileID: 1962486817}
-  badgesPannel: {fileID: 241198758}
+  badgesPannel: {fileID: 505223230}
   badgePrefab: {fileID: 9125523961618291588, guid: ffeb87afc168449ce92cd52b1b0d743b, type: 3}
   playHeads: {fileID: 83359999}
   playTails: {fileID: 83681851}
+  heads: {fileID: 1384078324}
+  tails: {fileID: 232743259}
 --- !u!224 &1112310390
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2758,10 +2760,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168662292fac34d30979a575c93a8a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: 0
+  target: 1
   devAddress: http://localhost
   devPort: 4500
-  prodAddress: http://localhost
+  prodAddress: http://forge-server-example.herokuapp.com
   prodPort: 80
   spriteRenderer: {fileID: 1065855569}
 --- !u!4 &1747332008
@@ -2927,7 +2929,7 @@ GameObject:
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1962486817
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3384,9 +3386,9 @@ RectTransform:
   m_Father: {fileID: 657182445}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 180.17435, y: -35.57485}
   m_SizeDelta: {x: 356.3487, y: 67.1497}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2109876119
