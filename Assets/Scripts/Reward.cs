@@ -6,13 +6,21 @@ using UnityEngine;
 [Serializable]
 public class Reward  
 {
-    public int _id;
-    string category;
-    string name;
+    public string _id;
+    public Category[] category;
+    public string name;
     string description;
     public string imagePath;
     Texture2D texture2D;
     Sprite sprite;
+}
+
+[Serializable]
+public class Category
+{
+    public string _id;
+    public string name;
+    string description;
 }
 
 [Serializable]

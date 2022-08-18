@@ -1,14 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EventBroker : MonoBehaviour
 {
-    public static event Action<Player>OnPlayerUpdate;
+    public static event Action<Player> OnPlayerUpdate;
     public static event Action<Player> OnNewPlayer;
     public static event Action<String> OnPostmanError;
     public static event Action<String> OnPostmanSuccess;
+    public static event Action<String> OnCoinToss;
 
     public static void CallOnPlayerUpdate (Player player)
     {
@@ -30,5 +29,9 @@ public class EventBroker : MonoBehaviour
         OnPostmanSuccess?.Invoke(result);
     }
 
+    public static void CallOnCoinToss (string coin)
+    {
+        OnCoinToss?.Invoke(coin);
+    }
 
 }

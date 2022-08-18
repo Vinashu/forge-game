@@ -5,69 +5,70 @@ using UnityEngine;
 public class Player
 {
     string name = "Player #1";
-    int level = 0;
-    int levels = 0;
+    int matches = 0;
     int points = 0;
-    int totalPoints = 0;
+    int winsInARow = 0;
 
-    public Dictionary<int, Reward> rewards = new Dictionary<int, Reward>();
+    public Dictionary<string, Reward> rewards = new Dictionary<string, Reward>();
 
     public Player()
     {
 
     }
 
-    public Player (string name, int level, int levels, int points, int totalPoints)
+    public Player (string name, int matches, int points, int winsInARow)
     {
         this.name = name;
-        this.level = level;
-        this.levels = levels;
+        this.matches = matches;
         this.points = points;
-        this.totalPoints = totalPoints;
+        this.winsInARow = winsInARow;
     }
 
     public Postman.Dispatcher CreateMessages()
     {
         ArrayList messageList = new ArrayList();
-        messageList.Add(new Postman.Message("level", this.level));
-        messageList.Add(new Postman.Message("levels", this.levels));
+        messageList.Add(new Postman.Message("matches", this.matches));
         messageList.Add(new Postman.Message("points", this.points));
-        messageList.Add(new Postman.Message("totalPoints", this.totalPoints));
+        messageList.Add(new Postman.Message("winsInARow", this.winsInARow));
         Postman.Message[] messages = (Postman.Message[])messageList.ToArray(typeof(Postman.Message));
         Postman.Dispatcher dispatcher = new Postman.Dispatcher(messages);
-        //Debug.Log(JsonUtility.ToJson(dispatcher));
         return dispatcher;
     }
 
     public void UpdateRewards(Rewards result)
     {
-        foreach(Reward reward in result.rewards)
+        foreach (Reward reward in result.rewards)
         {
-            if(!this.rewards.ContainsKey(reward._id))
+            if (reward.category[0].name.Equals("Points")) {
+                this.UpdatePoints(Int32.Parse(reward.name));
+            } else if (reward.category[0].name.Equals("Badge"))
             {
-                this.rewards.Add(reward._id, reward);
+                if (!this.rewards.ContainsKey(reward._id))
+                {
+                    this.rewards.Add(reward._id, reward);
+                }
             }
         }
     }
 
-    public void UpdateLevel()
+    public void UpdateMatches()
     {
-        this.level++;
-    }
-
-    public void UpdateLevels()
-    {
-        this.levels++;
+        this.matches++;
     }
 
     public void UpdatePoints(int points)
     {
-        this.points = points;
+        this.points += points;
     }
 
-    public void UpdateTotalPoints(int points)
+    public void UpdateWinsInARow()
     {
-        this.totalPoints += points;
+        this.winsInARow++;
+    }
+
+    public void ResetWinsInARow()
+    {
+        this.winsInARow = 0;
     }
 
     public string GetName()
@@ -75,14 +76,9 @@ public class Player
         return this.name;
     }
 
-    public int GetLevel()
+    public int GetMatches()
     {
-        return this.level;
-    }
-
-    public int GetLevels()
-    {
-        return this.levels;
+        return this.matches;
     }
 
     public int GetPoints()
@@ -90,9 +86,9 @@ public class Player
         return this.points;
     }
 
-    public int GetTotalPoints()
+    public int GetWinsInARow()
     {
-        return this.totalPoints;
+        return this.winsInARow;
     }
 
     internal int GetNumberBadges()

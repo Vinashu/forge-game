@@ -8,17 +8,20 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI playerName;
-    [SerializeField] TextMeshProUGUI levelValue;
-    [SerializeField] TextMeshProUGUI levelsValue;
+    [SerializeField] TextMeshProUGUI matchesValue;
     [SerializeField] TextMeshProUGUI pointsValue;
-    [SerializeField] TextMeshProUGUI totalPointsValue;
+    [SerializeField] TextMeshProUGUI winsInARowValue;
     [SerializeField] TextMeshProUGUI badgesValue;
     [SerializeField] Transform errorWindow;
     [SerializeField] Transform badgesPannel;
     [SerializeField] Transform badgePrefab;
-    [SerializeField] Button playButton;
+    [SerializeField] Button playHeads;
+    [SerializeField] Button playTails;
+    [SerializeField] Transform heads;
+    [SerializeField] Transform tails;
 
-    Dictionary<int, Transform> badges = new Dictionary<int, Transform>();
+
+    Dictionary<string, Transform> badges = new Dictionary<string, Transform>();
 
     float waitTime = 2.0f;
 
@@ -28,24 +31,48 @@ public class UIManager : MonoBehaviour
         EventBroker.OnNewPlayer += NewPlayerInfo;
         EventBroker.OnPostmanError += OnPostmanError;
         EventBroker.OnPostmanSuccess += OnPostmanSuccess;
+        EventBroker.OnCoinToss += OnCoinToss;
+    }
+
+    private void OnCoinToss(string coin)
+    {
+        switch (coin)
+        {
+            case "heads":
+                heads.GetComponent<SpriteRenderer>().color = Color.green;
+                tails.GetComponent<SpriteRenderer>().color = Color.red;
+                break;
+            case "tails":
+                heads.GetComponent<SpriteRenderer>().color = Color.red;
+                tails.GetComponent<SpriteRenderer>().color = Color.green;
+                break;
+            case "reset":
+                heads.GetComponent<SpriteRenderer>().color = Color.white;
+                tails.GetComponent<SpriteRenderer>().color = Color.white;
+                break;
+            default:
+                heads.GetComponent<SpriteRenderer>().color = Color.white;
+                tails.GetComponent<SpriteRenderer>().color = Color.white;
+                break;
+        }
     }
 
     private void UpdatePlayerInfo(Player player)
     {
         this.playerName.text = player.GetName();
-        this.levelValue.text = player.GetLevel().ToString();
-        this.levelsValue.text = player.GetLevels().ToString();
+        this.matchesValue.text = player.GetMatches().ToString();
         this.pointsValue.text = player.GetPoints().ToString();
-        this.totalPointsValue.text = player.GetTotalPoints().ToString();
+        this.winsInARowValue.text = player.GetWinsInARow().ToString();
         this.badgesValue.text = player.GetNumberBadges().ToString();
 
-        foreach (KeyValuePair<int, Reward> reward in player.rewards)
+        foreach (KeyValuePair<string, Reward> reward in player.rewards)
         {
             if(!this.badges.ContainsKey(reward.Key))
             {
                 Transform badge = Instantiate(badgePrefab, badgesPannel);
                 this.badges.Add(reward.Key, badge);
-                string url = Postman.Instance.getServer() + "/images/" +reward.Value.imagePath;
+                //string url = Postman.Instance.getServer() + "/images/" +reward.Value.imagePath;
+                string url = reward.Value.imagePath;
                 Postman.Instance.GetImage(url,
                    (error) =>
                    {
@@ -53,7 +80,6 @@ public class UIManager : MonoBehaviour
                    },
                    (result) =>
                    {
-                       Debug.Log("Make a successeful image get request");
                        Sprite sprite = Sprite.Create(result, new Rect(0, 0, result.width, result.height), new Vector2(0.5f, 0.5f));
                        badge.GetComponentInChildren<Image>().sprite = sprite;
                    });
@@ -66,10 +92,9 @@ public class UIManager : MonoBehaviour
     private void NewPlayerInfo(Player player)
     {
         this.playerName.text = player.GetName();
-        this.levelValue.text = player.GetLevel().ToString();
-        this.levelsValue.text = player.GetLevels().ToString();
+        this.matchesValue.text = player.GetMatches().ToString();
         this.pointsValue.text = player.GetPoints().ToString();
-        this.totalPointsValue.text = player.GetTotalPoints().ToString();
+        this.winsInARowValue.text = player.GetWinsInARow().ToString();
         this.badgesValue.text = player.GetNumberBadges().ToString();
         ClearBadges();
     }
@@ -91,7 +116,8 @@ public class UIManager : MonoBehaviour
 
     IEnumerator OnPostmanSuccessAsync(string result)
     {
-        playButton.interactable = false;
+        playHeads.interactable = false;
+        playTails.interactable = false;
         errorWindow.gameObject.SetActive(true);
         Color color = new Color();
         ColorUtility.TryParseHtmlString("#05AD0164", out color);
@@ -102,7 +128,9 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         errorText.text = "";
         errorWindow.gameObject.SetActive(false);
-        playButton.interactable = true;
+        EventBroker.CallOnCoinToss("reset");
+        playHeads.interactable = true;
+        playTails.interactable = true;
     }
 
     private void OnPostmanError(string error)
@@ -112,7 +140,8 @@ public class UIManager : MonoBehaviour
 
     IEnumerator OnPostmanErrorAsync(string error)
     {
-        playButton.interactable = false;
+        playHeads.interactable = false;
+        playTails.interactable = false;
         errorWindow.gameObject.SetActive(true);
         Color color = new Color();
         ColorUtility.TryParseHtmlString("#FF210664", out color);
@@ -123,6 +152,8 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         errorText.text = "";
         errorWindow.gameObject.SetActive(false);
-        playButton.interactable = true;
+        EventBroker.CallOnCoinToss("reset");
+        playHeads.interactable = true;
+        playTails.interactable = true;
     }
 }
