@@ -62,7 +62,7 @@ public class Postman : MonoBehaviour
             case Server.DEV:
                 return ($"{this.devAddress}:{this.devPort}");
             case Server.PROD:
-                return this.prodAddress;
+                return this.prodPort == 0 ? this.prodAddress : $"{this.prodAddress}:{this.prodPort}";
                 //return ($"{this.prodAddress}:{this.prodPort}");
             default:
                 return ($"{this.devAddress}:{this.devPort}");
