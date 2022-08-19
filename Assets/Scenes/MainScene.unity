@@ -2792,7 +2792,7 @@ MonoBehaviour:
   target: 1
   devAddress: http://localhost
   devPort: 4500
-  prodAddress: http://forge-server-example.herokuapp.com
+  prodAddress: https://forge-server-example.herokuapp.com
   prodPort: 80
   spriteRenderer: {fileID: 1065855569}
 --- !u!4 &1747332008
