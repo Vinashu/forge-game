@@ -4,10 +4,19 @@ public class GameManager : MonoBehaviour
 {
     int players = 0;
     Player player;
+    Postman.Targets targets;
+    bool challenge = false;
 
     void Start()
     {
         PlayerInit();
+        TargetsInit();
+    }
+
+    public void ToggleChallenges()
+    {
+        this.challenge = !this.challenge;
+        EventBroker.CallOnShowChallenges(this.challenge);
     }
 
     public void PlayHeads()
@@ -41,7 +50,7 @@ public class GameManager : MonoBehaviour
                 Rewards rewards = JsonUtility.FromJson<Rewards>(result);
                 this.player.UpdateRewards(rewards);
                 EventBroker.CallOnPostmanSuccess(
-                    $"Message successefuly received from the server! {rewards.rewards.Length} rewards for you."
+                    $"Message successfully received from the server! {rewards.rewards.Length} rewards for you."
                 );
                 EventBroker.CallOnPlayerUpdate(this.player);
             }
@@ -80,7 +89,7 @@ public class GameManager : MonoBehaviour
                 Rewards rewards = JsonUtility.FromJson<Rewards>(result);
                 this.player.UpdateRewards(rewards);
                 EventBroker.CallOnPostmanSuccess(
-                    $"Message successefuly received from the server! {rewards.rewards.Length} rewards for you."
+                    $"Message successfully received from the server! {rewards.rewards.Length} rewards for you."
                 );
                 EventBroker.CallOnPlayerUpdate(this.player);
             }
@@ -112,5 +121,23 @@ public class GameManager : MonoBehaviour
         player = new Player($"Player #{this.players}", 0, 0, 0);
         EventBroker.CallOnNewPlayer(this.player);
         EventBroker.CallOnCoinToss("reset");
+    }
+
+    private void TargetsInit()
+    {
+        string url = Postman.Instance.getServer() + "/api/engine/targets/object";
+        Postman.Instance.Get(
+            url,
+            (error) =>
+            {
+                Debug.LogError($"error: {error}");
+                EventBroker.CallOnPostmanError(error);
+            },
+            (result) =>
+            {
+                Postman.Targets targets = JsonUtility.FromJson<Postman.Targets>(result);
+                this.targets = targets;
+            }
+        );
     }
 }

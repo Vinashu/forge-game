@@ -246,7 +246,7 @@ public class Postman : MonoBehaviour
             }
             else
             {
-                onSuccess("Message successefully received from the server.");
+                onSuccess("Message successfully received from the server.");
             }
         }
     }
@@ -284,12 +284,49 @@ public class Postman : MonoBehaviour
 
         public Dispatcher(Message[] messages)
         {
-            //this.messages = new Message[messages.Length];
             this.messages = messages;
-            //Debug.Log(this.messages[0].variable);
         }
     }
     #endregion
+
+    #region Target
+    /// <summary>
+    /// Class to format each Target object received from the server
+    /// </summary>
+    [Serializable]
+    public class Target
+    {
+        public string _id;
+        public string name;
+        public string description;
+
+        public Target() { }
+
+        public Target(string _id, string name, string description)
+        {
+            this._id = _id;
+            this.name = name;
+            this.description = description;
+        }
+    }
+
+    /// <summary>
+    /// Class to hold all the Targets 
+    /// </summary>
+    [Serializable]
+    public class Targets
+    {
+        public Target[] targets;
+
+        public Targets() { }
+
+        public Targets(Target[] targets)
+        {
+            this.targets = targets;
+        }
+    }
+    #endregion
+
 
     #region Tests
     /// <summary>
@@ -328,7 +365,7 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful GET requset");
+               Debug.Log("Make a successful GET requset");
                Message received = JsonUtility.FromJson<Message>(result);
                Debug.Log($"variable: {received.variable}");
                Debug.Log($"value: {received.value}");
@@ -339,7 +376,7 @@ public class Postman : MonoBehaviour
         Get(url,
            (error) =>
            {
-               Debug.Log("Make an UNsuccesseful GET requset");
+               Debug.Log("Make an UNsuccessful GET requset");
                Debug.Log($"Error: {error}");
            },
            (result) =>
@@ -358,7 +395,7 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful DELETE requset");
+               Debug.Log("Make a successful DELETE requset");
                Debug.Log($"variable: {result}");
            });
 
@@ -375,7 +412,7 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful POST requset");
+               Debug.Log("Make a successful POST requset");
                Message received = JsonUtility.FromJson<Message>(result);
                Debug.Log($"variable: {received.variable}");
                Debug.Log($"value: {received.value}");
@@ -393,7 +430,7 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful PUT requset");
+               Debug.Log("Make a successful PUT requset");
                Message received = JsonUtility.FromJson<Message>(result);
                Debug.Log($"variable: {received.variable}");
                Debug.Log($"value: {received.value}");
@@ -409,7 +446,7 @@ public class Postman : MonoBehaviour
            },
            (result) =>
            {
-               Debug.Log("Make a successeful image get requset");
+               Debug.Log("Make a successful image get requset");
                Sprite sprite = Sprite.Create(result, new Rect(0, 0, result.width, result.height), new Vector2(0.5f, 0.5f));
                this.spriteRenderer.sprite = sprite;
            });

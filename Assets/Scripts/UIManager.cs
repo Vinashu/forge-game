@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Button playTails;
     [SerializeField] Transform heads;
     [SerializeField] Transform tails;
+    [SerializeField] Transform challenges;
 
 
     Dictionary<string, Transform> badges = new Dictionary<string, Transform>();
@@ -31,6 +32,12 @@ public class UIManager : MonoBehaviour
         EventBroker.OnPostmanError += OnPostmanError;
         EventBroker.OnPostmanSuccess += OnPostmanSuccess;
         EventBroker.OnCoinToss += OnCoinToss;
+        EventBroker.OnShowChallenges += OnShowChallenges;
+    }
+
+    private void OnShowChallenges(bool modal)
+    {
+        this.challenges.gameObject.SetActive(modal);
     }
 
     private void OnCoinToss(string coin)

@@ -72,7 +72,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # MacOS DS_Sore file
-*.DS_Store
+# *.DS_Store
 
 # The game build folder
 docs/

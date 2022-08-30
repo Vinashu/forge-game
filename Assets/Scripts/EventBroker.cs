@@ -8,6 +8,7 @@ public class EventBroker : MonoBehaviour
     public static event Action<String> OnPostmanError;
     public static event Action<String> OnPostmanSuccess;
     public static event Action<String> OnCoinToss;
+    public static event Action<bool> OnShowChallenges;
 
     public static void CallOnPlayerUpdate (Player player)
     {
@@ -34,4 +35,8 @@ public class EventBroker : MonoBehaviour
         OnCoinToss?.Invoke(coin);
     }
 
+    public static void CallOnShowChallenges(bool modal)
+    {
+        OnShowChallenges?.Invoke(modal);
+    }
 }
